@@ -1,0 +1,12 @@
+{
+  "name": "ai-media-autopilot",
+  "version": "1.0.0",
+  "description": "Autonomous AI Media Studio",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
