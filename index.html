@@ -3,18 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoAI Media Studio</title>
+    <title>AutoAI Media Studio - Premium AI Platform</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; text-align: center; padding: 50px; }
-        .card { background: #1e293b; padding: 30px; border-radius: 10px; display: inline-block; max-width: 400px; }
-        button { background: #3b82f6; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; margin-top: 15px; }
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--card-bg);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .brand {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--accent);
+            color: var(--text);
+        }
+
+        .user-plan-badge {
+            background: #2e1065;
+            border: 1px solid #7c3aed;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .user-plan-badge p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .user-plan-badge h4 {
+            color: #a855f7;
+            margin-top: 4px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .view-section {
+            display: none;
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        /* Studio & Upload Box */
+        .studio-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .upload-dropzone {
+            border: 2px dashed var(--border);
+            padding: 40px;
+            border-radius: 10px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .upload-dropzone:hover {
+            border-color: var(--accent);
+        }
+
+        .btn-action {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .btn-action:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* Lockscreen Overlay if Unpaid */
+        .paywall-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .paywall-overlay.active {
+            display: flex;
+        }
+
+        .pricing-card-popup {
+            background: var(--card-bg);
+            border: 2px solid var(--accent);
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>AutoAI Media Studio</h1>
-        <p>Get 2 Days Unlimited AI Editing for just <strong>₹2</strong>!</p>
-        <button onclick="alert('Trial Activated!')">Start ₹2 Trial</button>
+
+    <!-- Paywall Lockscreen (Forces user to pay ₹2 trial before accessing tools) -->
+    <div class="paywall-overlay active" id="paywallModal">
+        <div class="pricing-card-popup">
+            <h2 style="margin-bottom: 10px;">🔒 Unlock AutoAI Studio</h2>
+            <p style="color: var::text-muted; font-size: 0.95rem; margin-bottom: 20px;">
+                To upload and process Photos & Videos with AI, active subscription is required.
+            </p>
+            <div style="background: var(--bg-color); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="color: var(--accent); font-size: 1.5rem; margin-bottom: 5px;">₹2 <span style="font-size: 0.9rem; color: var(--text-muted);">/ first 2 days</span></h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Then auto-renews at <b>₹599 / month</b>. Cancel anytime.</p>
+            </div>
+            <button class="btn-action" onclick="startSubscriptionProcess()" style="width: 100%; background: var(--success);">Pay ₹2 & Unlock Now</button>
+        </div>
     </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div>
+            <div class="brand">🚀 AutoAI Studio</div>
+            <ul class="nav-menu">
+                <li class="nav-item active" onclick="switchTab('studioTab', this)">🎨 Media & AI Studio</li>
+                <li class="nav-item" onclick="switchTab('accountTab', this)">💳 Subscription Plan</li>
+            </ul>
+        </div>
+        <div class="user-plan-badge">
+            <p>Membership Status</p>
+            <h4 id="userStatusBadge">Locked / Free</h4>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="main-content">
+        <div class="header">
+            <h2 id="pageHeaderTitle">AI Media Studio Workspace</h2>
+        </div>
+
+        <!-- Tab 1: Media Studio (Photos & Videos Upload) -->
+        <div id="studioTab" class="view-section active">
+            <div class="studio-container">
+                <h2>Upload Photo or Video for AI Enhancement</h2>
+                <p style="color: var(--text-muted); margin-top: 5px;">Drop your media files below to let AI process them instantly.</p>
+                
+                <div class="upload-dropzone" onclick="triggerUpload()">
+                    <p style="font-size: 1.1rem; font-weight: 500;">📁 Click here to select Photos / Videos</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">Supports JPG, PNG, MP4, MOV</p>
+                </div>
+                <input type="file" id="mediaFileInput" style="display: none;" onchange="handleFileSelection(event)">
+                
+                <div id="processingStatus" style="margin-top: 15px; font-weight: bold; color: var(--accent);"></div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Subscription Info -->
+        <div id="accountTab" class="view-section">
+            <h2>Your Subscription Details</h2>
+            <p style="color: var(--text-muted); margin-top: 5px;">Manage your auto-debit billing and active passes.</p>
+            <div style="background: var(--card-bg); border: 1px solid var(--border); padding: 25px; border-radius: 10px; margin-top: 20px; max-width: 500px;">
+                <p>Current Plan: <b id="planDetailText" style="color: var(--accent);">Free Trial Inactive</b></p>
+                <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);">Auto-Renewal Status: <span style="color: var(--danger);">Disabled</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+
+            if(tabId === 'studioTab') document.getElementById('pageHeaderTitle').innerText = 'AI Media Studio Workspace';
+            if(tabId === 'pageHeaderTitle' || tabId === 'accountTab') document.getElementById('pageHeaderTitle').innerText = 'Subscription & Billing';
+        }
+
+        function triggerUpload() {
+            // Check if user is paid/unlocked
+            document.getElementById('mediaFileInput').click();
+        }
+
+        function handleFileSelection(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('processingStatus').innerText = `Uploading "${file.name}"... AI processing initiated!`;
+            }
+        }
+
+        function startSubscriptionProcess() {
+            // Integration trigger for payment gateway url verification & ₹2 charge
+            alert('Redirecting to secure payment gateway for ₹2 trial verification...');
+            
+            // Simulating successful payment confirmation
+            document.getElementById('paywallModal').classList.remove('active');
+            document.getElementById('userStatusBadge').innerText = 'Pro VIP (Active)';
+            document.getElementById('planDetailText').innerText = 'Pro VIP Auto-Debit (₹599/mo after 2 days)';
+        }
+    </script>
 </body>
 </html>
