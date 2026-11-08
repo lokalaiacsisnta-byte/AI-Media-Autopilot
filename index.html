@@ -1,288 +1,253 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoAI Media Studio - Premium AI Platform</title>
+    <title>AutoAI Media Studio & Assistant Pro</title>
+    <!-- PWA Manifest & Theme -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <!-- Tailwind CSS for Modern UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent: #6366f1;
-            --accent-hover: #4f46e5;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --success: #22c55e;
-            --danger: #ef4444;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .sidebar {
-            width: 260px;
-            background-color: var(--card-bg);
-            border-right: 1px solid var(--border);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .brand {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: var(--accent);
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-menu {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .nav-item {
-            padding: 12px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: all 0.3s ease;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background-color: var(--accent);
-            color: var(--text);
-        }
-
-        .user-plan-badge {
-            background: #2e1065;
-            border: 1px solid #7c3aed;
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .user-plan-badge p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .user-plan-badge h4 {
-            color: #a855f7;
-            margin-top: 4px;
-        }
-
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header {
-            padding: 20px 30px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .view-section {
-            display: none;
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-        }
-
-        .view-section.active {
-            display: block;
-        }
-
-        /* Studio & Upload Box */
-        .studio-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .upload-dropzone {
-            border: 2px dashed var(--border);
-            padding: 40px;
-            border-radius: 10px;
-            margin: 20px 0;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .upload-dropzone:hover {
-            border-color: var(--accent);
-        }
-
-        .btn-action {
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1rem;
-        }
-
-        .btn-action:hover {
-            background-color: var(--accent-hover);
-        }
-
-        /* Lockscreen Overlay if Unpaid */
-        .paywall-overlay {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.95);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .paywall-overlay.active {
-            display: flex;
-        }
-
-        .pricing-card-popup {
-            background: var(--card-bg);
-            border: 2px solid var(--accent);
-            padding: 40px;
-            border-radius: 16px;
-            max-width: 450px;
-            width: 100%;
-            box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
-        }
+        body { background-color: #0f172a; color: #f8fafc; }
     </style>
 </head>
-<body>
+<body class="h-screen flex flex-col justify-between overflow-hidden">
 
-    <!-- Paywall Lockscreen (Forces user to pay ₹2 trial before accessing tools) -->
-    <div class="paywall-overlay active" id="paywallModal">
-        <div class="pricing-card-popup">
-            <h2 style="margin-bottom: 10px;">🔒 Unlock AutoAI Studio</h2>
-            <p style="color: var::text-muted; font-size: 0.95rem; margin-bottom: 20px;">
-                To upload and process Photos & Videos with AI, active subscription is required.
+    <!-- Paywall Lockscreen (Forces user to pay ₹2 trial & enables auto-pay flow) -->
+    <div id="paywallModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-indigo-500/50 rounded-2xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl">
+            <div class="w-16 h-16 bg-indigo-600/20 text-indigo-400 rounded-full flex items-center justify-center mx-auto text-2xl">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <h2 class="text-xl font-bold">AutoAI Pro & Media Studio</h2>
+            <p class="text-xs text-slate-400 leading-relaxed">
+                खास AI फोटो/वीडियो एडिटिंग और मेरे साथ चैट करने के लिए सब्सक्रिप्शन जरूरी है। पहले 2 दिन का ट्रायल सिर्फ <b>₹2</b> में, उसके बाद ऑटो-पे से <b>₹599/महीना</b> कटेगा (कभी भी बंद कर सकते हैं)।
             </p>
-            <div style="background: var(--bg-color); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                <h3 style="color: var(--accent); font-size: 1.5rem; margin-bottom: 5px;">₹2 <span style="font-size: 0.9rem; color: var(--text-muted);">/ first 2 days</span></h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted);">Then auto-renews at <b>₹599 / month</b>. Cancel anytime.</p>
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                <span class="text-2xl font-black text-indigo-400">₹2</span> <span class="text-xs text-slate-400">/ पहले 2 दिन (फिर Auto-Pay एक्टिव)</span>
             </div>
-            <button class="btn-action" onclick="startSubscriptionProcess()" style="width: 100%; background: var(--success);">Pay ₹2 & Unlock Now</button>
+            <button onclick="startSubscriptionPayment()" class="w-full bg-emerald-600 hover:bg-emerald-700 py-3 rounded-xl font-semibold text-sm transition shadow-lg active:scale-95 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-shield-halved"></i> Pay ₹2 & Start Auto-Pay
+            </button>
         </div>
     </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div>
-            <div class="brand">🚀 AutoAI Studio</div>
-            <ul class="nav-menu">
-                <li class="nav-item active" onclick="switchTab('studioTab', this)">🎨 Media & AI Studio</li>
-                <li class="nav-item" onclick="switchTab('accountTab', this)">💳 Subscription Plan</li>
-            </ul>
+    <!-- Top Header -->
+    <header class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center shadow-md">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-base tracking-wide">AutoAI Assistant & Studio</h1>
+                <p class="text-[10px] text-emerald-400 flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Active & Ready
+                </p>
+            </div>
         </div>
-        <div class="user-plan-badge">
-            <p>Membership Status</p>
-            <h4 id="userStatusBadge">Locked / Free</h4>
+        <div id="statusBadge" class="bg-indigo-950 border border-indigo-700 text-indigo-300 px-3 py-1 rounded-full text-xs font-semibold">
+            Locked / Free
         </div>
-    </div>
+    </header>
 
-    <!-- Main Workspace -->
-    <div class="main-content">
-        <div class="header">
-            <h2 id="pageHeaderTitle">AI Media Studio Workspace</h2>
-        </div>
-
-        <!-- Tab 1: Media Studio (Photos & Videos Upload) -->
-        <div id="studioTab" class="view-section active">
-            <div class="studio-container">
-                <h2>Upload Photo or Video for AI Enhancement</h2>
-                <p style="color: var(--text-muted); margin-top: 5px;">Drop your media files below to let AI process them instantly.</p>
+    <!-- Main Chat & Studio Workspace -->
+    <main id="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-6 max-w-3xl w-full mx-auto">
+        <!-- AI Welcome & Tool Instruction Message -->
+        <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 flex-shrink-0 flex items-center justify-center text-xs font-bold">AI</div>
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl max-w-[85%] shadow-sm space-y-3">
+                <p class="text-sm leading-relaxed">नमस्ते! मैं आपका पर्सनल AI असिस्टेंट और मीडिया एडिटर हूँ। आप मुझसे चैट कर सकते हैं, या नीचे दिए गए बटन से अपनी फोटो/वीडियो अपलोड करके AI एडिटिंग करवा सकते हैं!</p>
                 
-                <div class="upload-dropzone" onclick="triggerUpload()">
-                    <p style="font-size: 1.1rem; font-weight: 500;">📁 Click here to select Photos / Videos</p>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">Supports JPG, PNG, MP4, MOV</p>
+                <!-- Media Upload Box inside Chat -->
+                <div onclick="triggerMediaUpload()" class="border-2 border-dashed border-slate-700 hover:border-indigo-500 bg-slate-950/50 p-4 rounded-xl text-center cursor-pointer transition">
+                    <i class="fa-solid fa-cloud-arrow-up text-indigo-400 text-xl mb-1"></i>
+                    <p class="text-xs font-medium text-slate-300">Click to Upload Photo or Video for AI Edit</p>
                 </div>
-                <input type="file" id="mediaFileInput" style="display: none;" onchange="handleFileSelection(event)">
-                
-                <div id="processingStatus" style="margin-top: 15px; font-weight: bold; color: var(--accent);"></div>
+                <input type="file" id="mediaFileInput" class="hidden" accept="image/*,video/*" onchange="handleFileProcessed(event)">
+
+                <!-- Feedback / Like Unlike Bar -->
+                <div class="flex items-center space-x-4 pt-2 text-slate-400 text-xs border-t border-slate-800">
+                    <button onclick="handleFeedback(this, 'like')" class="hover:text-indigo-400 transition"><i class="fa-regular fa-thumbs-up"></i> लाइक</button>
+                    <button onclick="handleFeedback(this, 'dislike')" class="hover:text-red-400 transition"><i class="fa-regular fa-thumbs-down"></i></button>
+                    <button onclick="copyMessage(this)" class="hover:text-slate-200 transition"><i class="fa-regular fa-copy"></i> कॉपी</button>
+                </div>
             </div>
         </div>
+    </main>
 
-        <!-- Tab 2: Subscription Info -->
-        <div id="accountTab" class="view-section">
-            <h2>Your Subscription Details</h2>
-            <p style="color: var(--text-muted); margin-top: 5px;">Manage your auto-debit billing and active passes.</p>
-            <div style="background: var(--card-bg); border: 1px solid var(--border); padding: 25px; border-radius: 10px; margin-top: 20px; max-width: 500px;">
-                <p>Current Plan: <b id="planDetailText" style="color: var(--accent);">Free Trial Inactive</b></p>
-                <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);">Auto-Renewal Status: <span style="color: var(--danger);">Disabled</span></p>
-            </div>
+    <!-- Footer Input Bar (Voice & Text) -->
+    <footer class="bg-slate-900 border-t border-slate-800 p-3 max-w-3xl w-full mx-auto rounded-t-2xl">
+        <div class="flex items-center space-x-2">
+            <!-- Voice Message Button -->
+            <button onclick="toggleVoiceRecording()" class="p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-300 transition active:scale-95" title="Voice Input">
+                <i class="fa-solid fa-microphone" id="micIcon"></i>
+            </button>
+            <!-- Text Input -->
+            <input type="text" id="userInput" placeholder="मुझसे कुछ पूछें या एडिटिंग निर्देश दें..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-slate-100">
+            <!-- Send Button -->
+            <button onclick="sendMessage()" class="bg-indigo-600 hover:bg-indigo-700 px-5 py-3 rounded-xl text-sm font-semibold transition active:scale-95 shadow-md flex items-center gap-2">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
         </div>
-    </div>
+    </footer>
 
+    <!-- JavaScript Logic -->
     <script>
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        // Web Audio API for Beep Sounds (Send / Receive)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep(type) {
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
             
-            document.getElementById(tabId).classList.add('active');
-            element.classList.add('active');
-
-            if(tabId === 'studioTab') document.getElementById('pageHeaderTitle').innerText = 'AI Media Studio Workspace';
-            if(tabId === 'pageHeaderTitle' || tabId === 'accountTab') document.getElementById('pageHeaderTitle').innerText = 'Subscription & Billing';
-        }
-
-        function triggerUpload() {
-            // Check if user is paid/unlocked
-            document.getElementById('mediaFileInput').click();
-        }
-
-        function handleFileSelection(event) {
-            const file = event.target.files[0];
-            if (file) {
-                document.getElementById('processingStatus').innerText = `Uploading "${file.name}"... AI processing initiated!`;
+            if(type === 'send') {
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.12);
+            } else if(type === 'receive') {
+                osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.15);
             }
         }
 
-        function startSubscriptionProcess() {
-            // Integration trigger for payment gateway url verification & ₹2 charge
-            alert('Redirecting to secure payment gateway for ₹2 trial verification...');
+        // PWA Service Worker Registration for Play Store / PWABuilder
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration error:', err));
+        }
+
+        // Subscription & Auto-Pay Flow Simulation
+        function startSubscriptionPayment() {
+            // UPI Intent link for ₹2 trial with e-mandate/auto-pay instruction
+            const upiID = "your-upi-id@paytm"; // यहाँ अपनी UPI ID डालें
+            const payeeName = "AutoAI Studio";
+            const upiUrl = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(payeeName)}&am=2&cu=INR&tn=AutoAI%20Trial%20Subscription%20(Auto-Pay%20₹599/mo)`;
             
-            // Simulating successful payment confirmation
-            document.getElementById('paywallModal').classList.remove('active');
-            document.getElementById('userStatusBadge').innerText = 'Pro VIP (Active)';
-            document.getElementById('planDetailText').innerText = 'Pro VIP Auto-Debit (₹599/mo after 2 days)';
+            // Trigger UPI app on mobile
+            window.location.href = upiUrl;
+
+            // Simulating payment success response
+            setTimeout(() => {
+                document.getElementById('paywallModal').classList.add('hidden');
+                document.getElementById('statusBadge').innerText = 'PRO VIP (Auto-Pay Active)';
+                document.getElementById('statusBadge').className = 'bg-emerald-950 border border-emerald-700 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold';
+                alert('₹2 का भुगतान सफल हुआ! आपका ऑटो-पे (₹599/माह) 3rd दिन के लिए सेट हो गया है।');
+            }, 2000);
+        }
+
+        // Send Chat Message
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const text = input.value.trim();
+            if(!text) return;
+
+            const chatContainer = document.getElementById('chatContainer');
+            
+            // User Bubble
+            const userHTML = `
+                <div class="flex items-start justify-end space-x-3">
+                    <div class="bg-indigo-600 text-white p-4 rounded-2xl max-w-[80%] shadow-sm text-sm">
+                        ${text}
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-slate-800 flex-shrink-0 flex items-center justify-center text-xs font-bold">आप</div>
+                </div>`;
+            chatContainer.insertAdjacentHTML('beforeend', userHTML);
+            input.value = '';
+            playBeep('send');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // AI Response Simulation
+            setTimeout(() => {
+                const aiHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 flex-shrink-0 flex items-center justify-center text-xs font-bold">AI</div>
+                        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl max-w-[85%] shadow-sm space-y-2">
+                            <p class="text-sm leading-relaxed">मैंने आपके निर्देश: "${text}" को समझ लिया है। उस पर काम किया जा रहा है!</p>
+                            <div class="flex items-center space-x-4 pt-2 text-slate-400 text-xs border-t border-slate-800">
+                                <button onclick="handleFeedback(this, 'like')" class="hover:text-indigo-400 transition"><i class="fa-regular fa-thumbs-up"></i> लाइक</button>
+                                <button onclick="handleFeedback(this, 'dislike')" class="hover:text-red-400 transition"><i class="fa-regular fa-thumbs-down"></i></button>
+                                <button onclick="copyMessage(this)" class="hover:text-slate-200 transition"><i class="fa-regular fa-copy"></i> कॉपी</button>
+                            </div>
+                        </div>
+                    </div>`;
+                chatContainer.insertAdjacentHTML('beforeend', aiHTML);
+                playBeep('receive');
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 1000);
+        }
+
+        // Voice Recording (Web Speech API)
+        let isRecording = false;
+        function toggleVoiceRecording() {
+            const micIcon = document.getElementById('micIcon');
+            const userInput = document.getElementById('userInput');
+            
+            if (!isRecording) {
+                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                    alert('आपका ब्राउज़र वॉइस रिकग्निशन सपोर्ट नहीं करता है।');
+                    return;
+                }
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'hi-IN';
+                
+                recognition.onstart = function() {
+                    isRecording = true;
+                    micIcon.className = "fa-solid fa-microphone-slash text-red-400 animate-pulse";
+                    userInput.placeholder = "सुन रहा हूँ, बोलिए...";
+                };
+                recognition.onresult = function(event) {
+                    userInput.value = event.results[0][0].transcript;
+                };
+                recognition.onend = function() {
+                    isRecording = false;
+                    micIcon.className = "fa-solid fa-microphone";
+                    userInput.placeholder = "मुझसे कुछ पूछें या एडिटिंग निर्देश दें...";
+                    if(userInput.value) sendMessage();
+                };
+                recognition.start();
+            }
+        }
+
+        // Media Upload Handler
+        function triggerMediaUpload() {
+            document.getElementById('mediaFileInput').click();
+        }
+
+        function handleFileProcessed(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const chatContainer = document.getElementById('chatContainer');
+                const fileHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 flex-shrink-0 flex items-center justify-center text-xs font-bold">AI</div>
+                        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl max-w-[85%] shadow-sm space-y-2">
+                            <p class="text-sm text-emerald-400 font-medium"><i class="fa-solid fa-circle-check"></i> फ़ाइल "${file.name}" सफलतापूर्वक अपलोड हो गई है। AI एन्हांसमेंट और एडिटिंग प्रोसेस शुरू हो रही है...</p>
+                        </div>
+                    </div>`;
+                chatContainer.insertAdjacentHTML('beforeend', fileHTML);
+                playBeep('receive');
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+
+        // Like / Unlike & Copy Helpers
+        function handleFeedback(btn, type) {
+            btn.classList.toggle('text-indigo-400');
+            btn.classList.toggle('font-bold');
+        }
+        function copyMessage(btn) {
+            const text = btn.closest('.bg-slate-900').querySelector('p').innerText;
+            navigator.clipboard.writeText(text);
+            alert('संदेश कॉपी कर लिया गया है!');
         }
     </script>
 </body>
