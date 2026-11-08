@@ -1,7 +1,7 @@
 {
-  "name": "AutoAI Assistant & Studio",
+  "name": "AI Media Studio",
   "short_name": "AutoAI",
-  "description": "AI Photo/Video Editor with Assistant Chat & Auto-Pay",
+  "description": "AI Photo/Video Editor with studio Chat &amp; Auto-Pay",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",
