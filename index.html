@@ -68,7 +68,6 @@
             font-size: 14px;
             line-height: 1.5;
         }
-        /* Gemini Style Input Bar */
         .input-area {
             padding: 15px 20px;
             background: #1e1f20;
@@ -106,7 +105,6 @@
         .text-input::placeholder {
             color: #8e918f;
         }
-        /* Payment Modal */
         #paymentModal {
             display: none;
             position: fixed;
@@ -168,7 +166,6 @@
         </div>
     </div>
 
-    <!-- Gemini Style Input Bar -->
     <div class="input-area">
         <div class="input-box">
             <button class="plus-btn" onclick="checkUpload()" title="Add Attachment">+</button>
@@ -176,7 +173,6 @@
         </div>
     </div>
 
-    <!-- Payment Modal -->
     <div id="paymentModal">
         <div class="modal-content">
             <h2>AutoAI Pro & Media Studio</h2>
@@ -186,12 +182,10 @@
     </div>
 
     <script>
-        // चेक करें कि यूज़र ने पहले पेमेंट किया है या नहीं
         let isPaid = localStorage.getItem('ai_paid') === 'true';
 
         function checkUpload() {
             if (!isPaid) {
-                // अगर पेमेंट नहीं हुआ है, तो पेमेंट मोडल दिखाएँ
                 document.getElementById('paymentModal').style.display = 'flex';
             } else {
                 alert('Opening media uploader...');
@@ -199,28 +193,9 @@
         }
 
         function processPayment() {
-            // यहाँ आप अपना असली Razorpay लिंक या इंटीग्रेशन डाल सकते हैं
-            // उदाहरण के लिए: window.location.href = "YOUR_RAZORPAY_PAYMENT_LINK";
-            
-            // अभी के लिए यह ₹2 पेमेंट सफल मानकर आगे बढ़ाएगा:
-            alert('₹2 payment successful! Your 2-day trial has started.');
-            localStorage.setItem('ai_paid', 'true');
-            isPaid = true;
-            document.getElementById('paymentModal').style.display = 'none';
-            window.location.reload();
+            // आपका असली Razorpay और ऑटो-पे लिंक:
+            window.location.href = "https://razorpay.me/@autoaijm";
         }
     </script>
 </body>
 </html>
-        function processPayment() {
-            // अभी यहाँ टेस्टिंग वाला मैसेज है:
-            alert('₹2 payment successful! Your 2-day trial has started.');
-            localStorage.setItem('ai_paid', 'true');
-            isPaid = true;
-            document.getElementById('paymentModal').style.display = 'none';
-            window.location.reload();
-        }
-        function processPayment() {
-            // यहाँ अपना असली Razorpay लिंक डालें
-            window.location.href = "YOUR_ACTUAL_RAZORPAY_PAYMENT_LINK";
-        }
