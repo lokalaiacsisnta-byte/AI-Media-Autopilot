@@ -1,21 +1,12 @@
-{
-  "name": "AI Media Studio",
-  "short_name": "AutoAI",
-  "description": "AI Photo/Video Editor with studio Chat &amp; Auto-Pay",
-  "start_url": "/",
+background_color": "rgb(255, 255, 255)",
+  "dir": "ltr",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "icons": [
-    {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "name": "ai-media-autopilot.onrender",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "ai-media-autopilot.onrender",
+  "start_url": "/",
+  "theme_color": "rgb(255, 255, 255)",
+  "id": "AI Media Studio",
+  "description": "AI-powered media assistant and advanced chatbot for seamless creation and editing."
 }
