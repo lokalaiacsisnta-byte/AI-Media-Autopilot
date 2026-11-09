@@ -181,7 +181,6 @@
         <div class="modal-content">
             <h2>AutoAI Pro & Media Studio</h2>
             <p>Unlock professional AI photo/video editing and unlimited chat. Get instant access with a 2-day trial for just ₹2.</p>
-            <!-- यहाँ आप अपने Razorpay पेमेंट लिंक या बटन का उपयोग कर सकते हैं -->
             <button class="pay-btn" onclick="processPayment()">Pay ₹2 Now</button>
         </div>
     </div>
@@ -195,21 +194,18 @@
                 // अगर पेमेंट नहीं हुआ है, तो पेमेंट मोडल दिखाएँ
                 document.getElementById('paymentModal').style.display = 'flex';
             } else {
-                // पेमेंट होने पर फाइल अपलोडर खुलेगा
                 alert('Opening media uploader...');
             }
         }
 
         function processPayment() {
-            // यहाँ Razorpay पेमेंट सक्सेस होने के बाद का फ्लो काम करेगा
-            // यूज़र को केवल ₹2 सफल होने का मैसेज दिखेगा
-            alert('₹2 payment successful! Your 2-day trial has started.');
+            // यहाँ आप अपना असली Razorpay लिंक या इंटीग्रेशन डाल सकते हैं
+            // उदाहरण के लिए: window.location.href = "YOUR_RAZORPAY_PAYMENT_LINK";
             
-            // स्टेटस सेव करें
+            // अभी के लिए यह ₹2 पेमेंट सफल मानकर आगे बढ़ाएगा:
+            alert('₹2 payment successful! Your 2-day trial has started.');
             localStorage.setItem('ai_paid', 'true');
             isPaid = true;
-            
-            // मोडल बंद करें और पेज रिफ्रेश करें
             document.getElementById('paymentModal').style.display = 'none';
             window.location.reload();
         }
