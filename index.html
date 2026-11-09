@@ -212,3 +212,15 @@
     </script>
 </body>
 </html>
+        function processPayment() {
+            // अभी यहाँ टेस्टिंग वाला मैसेज है:
+            alert('₹2 payment successful! Your 2-day trial has started.');
+            localStorage.setItem('ai_paid', 'true');
+            isPaid = true;
+            document.getElementById('paymentModal').style.display = 'none';
+            window.location.reload();
+        }
+        function processPayment() {
+            // यहाँ अपना असली Razorpay लिंक डालें
+            window.location.href = "YOUR_ACTUAL_RAZORPAY_PAYMENT_LINK";
+        }
